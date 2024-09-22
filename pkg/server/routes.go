@@ -73,3 +73,8 @@ func (s *server) eventsHandler(w http.ResponseWriter, r *http.Request) {
 
 	s.eventHandler.subscribe(w, r)
 }
+
+func (s *server) getStateHandler(w http.ResponseWriter, _ *http.Request) {
+	w.Header().Add("Content-Type", "application/octet-stream")
+	w.Write(s.state.clone())
+}

@@ -9,7 +9,7 @@ import (
 	"github.com/rkrmr33/1mcb/pkg/util"
 )
 
-const OneMillion = 1_000
+const OneMillion = 1_000_000
 
 type (
 	// Config is the server configuration
@@ -46,8 +46,7 @@ func New(cfg Config) (Server, error) {
 		return nil, fmt.Errorf("failed to parse templates: %w", err)
 	}
 
-	stateBuf := make([]byte, OneMillion)
-	// TODO load initial state from db
+	stateBuf := make([]byte, OneMillion/8)
 
 	return &server{
 		cfg:          cfg,
@@ -75,6 +74,7 @@ func (s *server) prepareRoutes() *http.ServeMux {
 	// API
 	mux.HandleFunc("GET /api/events", s.eventsHandler)
 	mux.Handle("POST /api/toggle", http.MaxBytesHandler(http.HandlerFunc(s.toggleHandler), s.cfg.MaxBodySize))
+	mux.HandleFunc("GET /api/state", s.getStateHandler)
 
 	// Static assets handler
 	mux.Handle("/static/", http.FileServer(http.FS(assets.Assets)))

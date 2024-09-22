@@ -1,5 +1,5 @@
 # 1mcb
-One million checkbox side in Golang &amp; MongoDB. Inspired by popular https://onemillioncheckboxes.com
+One million checkbox site in Golang &amp; MongoDB. Inspired by the popular https://onemillioncheckboxes.com.
 
 ## How To Run?
 ```bash

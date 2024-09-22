@@ -103,15 +103,15 @@ func (h *eventHandler) broadcastExcluding(e event, excludedID string) error {
 	return nil
 }
 
-func (h *eventHandler) writePayload(addr string, w http.ResponseWriter, payload []byte) {
-	fmt.Printf("%s     --> event %s %s\n", time.Now().Format(time.RFC3339), string(payload), addr)
+func (h *eventHandler) writePayload(id string, w http.ResponseWriter, payload []byte) {
+	fmt.Printf("%s <-- EVENT %s %s\n", time.Now().Format(time.RFC3339), string(payload), id)
 
 	_, err := fmt.Fprintf(w, "data: %s\n\n", payload)
 	if err != nil {
-		fmt.Printf("  failed writing to %s, removing subscription\n", addr)
+		fmt.Printf("  failed writing to %s, removing subscription\n", id)
 
 		h.mux.Lock()
-		delete(h.subs, addr)
+		delete(h.subs, id)
 		h.mux.Unlock()
 	}
 

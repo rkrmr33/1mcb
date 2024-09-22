@@ -21,17 +21,21 @@ func newState(buf []byte) state {
 
 func (s state) update(i int, state bool) {
 	s.mux.Lock()
-	var newState byte
+	defer s.mux.Unlock()
+
+	bucketIdx := i / 8
+	bitIdx := i % 8
 	if state {
-		newState = 1
+		s.buf[bucketIdx] |= 1 << bitIdx
+	} else {
+		s.buf[bucketIdx] &= ^(1 << bitIdx)
 	}
-	s.buf[i] = newState
-	s.mux.Unlock()
 }
 
 func (s state) clone() []byte {
 	s.mux.RLock()
 	defer s.mux.RUnlock()
+
 	copy := bytes.NewBuffer(nil)
 	_, _ = bytes.NewReader(s.buf).WriteTo(copy)
 
